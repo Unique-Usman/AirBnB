@@ -1,10 +1,11 @@
 #!usr/bin/python3
 import uuid
 from datetime import datetime
+import models
 
 # This module  which define base class for all the subclass
 # in this Airbnb Project. Other classes are
-# User, State, City and Place. 
+# User, State, City and Place.
 
 
 class BaseModel():
@@ -33,6 +34,7 @@ class BaseModel():
             current_time = datetime.now()
             self.created_at = current_time
             self.updated_at = current_time
+            models.storage.new(self)
         else:
             self.id = kwargs["id"]
             self.updated_at = datetime.strptime(kwargs["updated_at"], "%Y-%m-%dT%H:%M:%S.%f")
@@ -48,9 +50,8 @@ class BaseModel():
 
     def save(self) -> None:
         """Updates the public instance attribute updated_at with current datetime"""
-
-        current_time = datetime.now().isoformat(sep="T", timespec="microseconds")
-        self.updated_at = current_time
+        self.updated_at = datetime.now()
+        models.storage.save()
 
     def to_dict(self) -> dict:
         """It returns the dict representation of the class
@@ -58,7 +59,8 @@ class BaseModel():
         Args:
             dict: The dictionary representation of the class
         """
-        self.__dict__["__class__"] = f"{self.__class__.__name__}"
-        self.__dict__["updated_at"] = f"{self.updated_at.isoformat(sep='T', timespec='microseconds')}"
-        self.__dict__["created_at"] = f"{self.created_at.isoformat(sep='T', timespec='microseconds')}"
-        return self.__dict__
+        rdic = self.__dict__.copy()
+        rdic["__class__"] = self.__class__.__name__
+        rdic["updated_at"] = self.updated_at.isoformat(sep='T', timespec='microseconds')
+        rdic["created_at"] = self.created_at.isoformat(sep='T', timespec='microseconds')
+        return rdic
