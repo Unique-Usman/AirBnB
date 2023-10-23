@@ -16,7 +16,9 @@ class TestBaseModelInstantiation(unittest.TestCase):
     """This is the class for testing the BaseModel class"""
 
     def setUp(self) -> None:
-        """The setUp class"""
+        """To prepare the necessary requirement/environment/variable
+        to run the test
+        """
 
         self.bm1 = BaseModel()
         self.bm2 = BaseModel()
@@ -117,10 +119,66 @@ class TestBaseModelInstantiation(unittest.TestCase):
         self.assertEqual(bm.updated_at, dt)
 
 
+class TestBaseModelSaveToFile(unittest.TestCase):
+    """ Class for testing the save() method in the BaseModel class"""
+    def setUp(self) -> None:
+        """To prepare the necessary requirement/environment/variable
+        to run the test
+        """
+        try:
+            os.rename("file.json", "tmp")
+        except OSError:
+            pass
+
+        self.bm1 = BaseModel()
+        self.bm2 = BaseModel()
+ 
+    def tearDown(self) -> None:
+        """To clean the variable, environment, requirement after test"""
+        try:
+            os.remove("file.json")
+        except OSError:
+            pass
+        try:
+            os.rename("tmp", "file.json")
+        except OSError:
+            pass
+
+        self.bm1 = None
+        self.bm2 = None
+
+    def test_one_save(self):
+        first_updated_at = self.bm1.updated_at
+        self.bm1.save()
+        self.assertLess(first_updated_at, self.bm1.updated_at)
+
+    def test_two_saves(self):
+        first_updated_at = self.bm1.updated_at
+        self.bm1.save()
+        second_updated_at = self.bm2.updated_at
+        self.assertLess(first_updated_at, second_updated_at)
+        sleep(0.05)
+        self.bm1.save()
+        self.assertLess(second_updated_at, self.bm1.updated_at)
+
+    def test_save_with_arg(self):
+        with self.assertRaises(TypeError):
+            self.bm1.save(None)
+
+    def test_save_updates_file(self):
+        self.bm1.save()
+        bmid = "BaseModel." + self.bm1.id
+        with open("file.json", "r") as f:
+            self.assertIn(bmid, f.read())
+
+
 class TestBaseModel_to_dict(unittest.TestCase):
     """Unittests for testing to_dict method of the BaseModel class."""
 
     def setUp(self):
+        """To prepare the necessary requirement/environment/variable
+        to run the test
+        """
         self.bm = BaseModel()
 
     def test_to_dict_type(self):
