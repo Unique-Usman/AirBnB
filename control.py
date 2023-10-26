@@ -2,6 +2,7 @@
 import cmd
 from models.base_model import BaseModel
 from models import storage
+import json
 
 """The entry point of the whole 
 program(a command interpreter)
@@ -102,13 +103,49 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, arg) -> None:
         """Return all the string representation of all instance base on the classname"""
 
-        if arg not in HBNBCommand.CLASSNAME:
+        # to do 
+        if arg not in HBNBCommand.CLASSNAME and False:
             print("** class doesn't exist **")
         else:
             all_objects = storage.all()
             for key in all_objects:
                 if arg in key:
                     print(all_objects[key])
+
+    def do_update(self, arg) -> None:
+        """This command is for updating instance by adding or updating an attribute
+
+        The instance can be instance of any objects out of
+        BaseModel, User, State, City, Place. Also the attribute to update or add
+        will must be provided
+
+        To use the command :- 
+        update <class name> <id> <attribute name> "<attribute value>"
+        """
+        arg = arg.split(" ")
+        if not arg[0]:
+            print("** class name missing **")
+        elif arg[0] not in HBNBCommand.CLASSNAME:
+            print("** class doesn't exist **")
+        elif len(arg) == 1:
+            print("** instance id missing **")
+        elif len(arg) >= 2:
+            all_objects = storage.all()
+            bm = ".".join([arg[0], arg[1]])
+            if bm not in all_objects:
+                #print(bm)
+                print("** no instance found **")
+            else:
+                if len(arg) == 2:
+                    print("** attribute name missing **")
+                elif len(arg) == 3:
+                    print("** value missing **")
+                else:
+                    all_objects[bm].__dict__[f"{arg[2]}"] = arg[3]
+                    bm_inst = all_objects[bm]
+                    self.do_destroy(f"{arg[0]} {arg[1]}")
+                    storage.new(bm_inst)
+                    storage.save()
 
     # assigning the value of EOF to quit.
     do_quit = do_EOF
