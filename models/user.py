@@ -10,6 +10,6 @@ class User(BaseModel):
     """User class which inherit from BaseModel"""
 
     email = ""
-    password =""
+    password = ""
     first_name = ""
     last_name = ""
