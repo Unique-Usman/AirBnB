@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import cmd
 from models.base_model import BaseModel
+from models.user import User
 from models import storage
 import json
 
@@ -44,8 +45,8 @@ class HBNBCommand(cmd.Cmd):
         """
         if arg is None or not arg:
             print("** class name missing **")
-        elif arg == "BaseModel":
-            bm = BaseModel()
+        elif arg in HBNBCommand.CLASSNAME:
+            bm = eval(arg)()
             bm.save()
             print(bm.id)
         else:
