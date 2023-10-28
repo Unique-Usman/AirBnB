@@ -7,6 +7,11 @@ for the project"""
 import json
 from models.base_model import BaseModel
 from models.user import User
+from models.city import City
+from models.amenity import Amenity
+from models.state import State
+from models.review import Review
+from models.place import Place
 
 class FileStorage():
     """The class for handling file storage

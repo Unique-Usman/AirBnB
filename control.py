@@ -1,8 +1,15 @@
 #!/usr/bin/python3
 import cmd
+import re
 from models.base_model import BaseModel
 from models.user import User
+from models.city import City
+from models.amenity import Amenity
+from models.state import State
+from models.review import Review
+from models.place import Place
 from models import storage
+
 import json
 
 """The entry point of the whole 
@@ -15,7 +22,7 @@ class HBNBCommand(cmd.Cmd):
     The entry point of the project
     """
     prompt = "(hbnb) "
-    CLASSNAME = ["BaseModel", "User", "State", "City", "Place"]
+    CLASSNAME = ["BaseModel", "User", "State", "City", "Place", "Review", "Amenity"]
 
     def do_EOF(self, line) -> bool:
         """Function to exit the interpreter gracefully"""
@@ -42,6 +49,8 @@ class HBNBCommand(cmd.Cmd):
 
         Args:
             arg (str): The name of the object
+        Usage:
+            create <classname>
         """
         if arg is None or not arg:
             print("** class name missing **")
@@ -147,6 +156,59 @@ class HBNBCommand(cmd.Cmd):
                     self.do_destroy(f"{arg[0]} {arg[1]}")
                     storage.new(bm_inst)
                     storage.save()
+
+    def default(self, line):
+        """Handle command like <classname>.all(), <classname>.count()
+        
+        <class name>.update(<id>, <attribute name>, <attribute value>)
+        <class name>.update(<id>, <dictionary representation>).
+        """
+
+        if "." not in line and "(" not in line  and ")" not in line:
+            super().default(line)
+            return
+        a = re.match("([A-Z][a-zA-Z]+)\.([a-z]+)\((.*)\)", line)
+        if not a:
+            super().default(line)
+            return
+        group_1 = a.group(1)
+        group_2 = a.group(2)
+        group_3 = a.group(3)
+
+        if not group_3:
+            if group_2 == "all":
+                self.do_all(f"{group_1}")
+                return
+            elif group_2 == "count":
+                all_objects = storage.all()
+                count = 0
+                for key in all_objects:
+                    if group_1 in key:
+                        count += 1
+                print(count)
+                return
+        elif group_3:
+            if group_2 == "show":
+                self.do_show(group_1 + ' ' + group_3.replace('"', ''))
+                return
+            elif group_2 == "destroy":
+                self.do_destroy(group_1 +  ' ' + group_3.replace('"', ''))
+                return
+            elif group_2 == "update":
+                if "{" in group_3:
+                     dict_arg = re.search("(\{.*\})", group_3)
+                     dict_arg = json.loads(dict_arg.group(1).replace("'", '"'))
+                     id_arg = group_3.replace(',', '').replace('"', '').split(" ")[0]
+                     for key, value in dict_arg.items():
+                        self.do_update(group_1 + " " + id_arg + " " + key + " " + str(value))
+                     return
+                else:
+                    string = group_1 + " " + group_3.replace('"', '').replace(',', '')
+                    self.do_update(string)
+                    return
+        else:
+            super().default(line)
+            return
 
     # assigning the value of EOF to quit.
     do_quit = do_EOF

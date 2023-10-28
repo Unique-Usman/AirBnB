@@ -36,9 +36,17 @@ class BaseModel():
             self.updated_at = current_time
             models.storage.new(self)
         else:
-            self.id = kwargs["id"]
-            self.updated_at = datetime.strptime(kwargs["updated_at"], "%Y-%m-%dT%H:%M:%S.%f")
-            self.created_at = datetime.strptime(kwargs["created_at"], "%Y-%m-%dT%H:%M:%S.%f")
+            for key in kwargs.keys():
+                if key == "__class__":
+                    continue
+                elif key == "created_at":
+                    self.created_at = datetime.strptime(kwargs[key],
+                                                        "%Y-%m-%dT%H:%M:%S.%f")
+                elif key == "updated_at":
+                    self.updated_at = datetime.strptime(kwargs[key],
+                                                        "%Y-%m-%dT%H:%M:%S.%f")
+                else:
+                    setattr(self, key, kwargs.get(key))
 
     def __str__(self) -> str:
         """It return the string representation of the Obj of the Class
