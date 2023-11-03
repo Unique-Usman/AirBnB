@@ -117,10 +117,12 @@ class HBNBCommand(cmd.Cmd):
         if arg not in HBNBCommand.CLASSNAME and False:
             print("** class doesn't exist **")
         else:
+            list_obj = []
             all_objects = storage.all()
             for key in all_objects:
                 if arg in key:
-                    print(all_objects[key])
+                    list_obj.append(all_objects[key])
+            print(list_obj)
 
     def do_update(self, arg) -> None:
         """This command is for updating instance by adding or updating an attribute
