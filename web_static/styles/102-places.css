@@ -5,9 +5,9 @@
 
 .places > div {
   display: flex;
-  align-items: center;
   justify-content: center;
   flex-wrap: wrap;
+  align-items: stretch;
 }
 
 .places > div article {
@@ -64,4 +64,55 @@
 
 .places .description {
   text-align: left;
+}
+
+.places .amenities {
+  margin-top: 40px;
+}
+
+.places div div h2 {
+  font-size: 16px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 15px;
+}
+
+.places .amenities ul li{
+  list-style-type: none;
+  text-align: left;
+  margin: 15px 0;
+  display: flex;
+  align-items: center;
+}
+
+.places .reviews li {
+  list-style-type: none;
+  text-align: left;
+  margin: 15px 0;
+}
+.places .reviews li h3{
+  font-size: 14px;
+  margin: 10px 0;
+}
+
+.places .reviews li p {
+  font-size: 12px;
+  margin: 5px 0;
+}
+
+
+@media (max-width: 64rem) {
+  .places > div article {
+    width: 90%;
+    margin: 10px;
+    padding: 10px;
+  }
+  
+
+}
+
+@media (max-width: 40rem) {
+  .places > div article {
+    text-align: left;
+  }
 }

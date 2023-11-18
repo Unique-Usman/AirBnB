@@ -15,3 +15,9 @@ body {
 button {
   cursor: pointer;
 }
+
+@media (max-width: 64rem) {
+  .container {
+    width: 90vw;
+  }
+}
