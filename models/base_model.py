@@ -1,12 +1,15 @@
 #!usr/bin/python3
 import uuid
 from datetime import datetime
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 import models
 
 # This module  which define base class for all the subclass
 # in this Airbnb Project. Other classes are
 # User, State, City and Place.
 
+Base = declarative_base()
 
 class BaseModel():
     """This the base class for other class
@@ -15,6 +18,14 @@ class BaseModel():
     Inherit from the base class. It defines Instance
     Like id, created_at, updated_at etc.
     """
+
+    id = Column(String(60), primary_key=True,
+                nullable=False, unique=True)
+    created_at = Column(DateTime,
+                        nullable=False, default=datetime.utcnow())
+    updated_at = Column(DateTime,
+                        nullable=False, default=datetime.utcnow(),
+                        onupdate=datetime.utcnow)
 
     def __init__(self, *args, **kwargs) -> None:
         """To initialize the BaseModel Class
@@ -34,7 +45,6 @@ class BaseModel():
             current_time = datetime.now()
             self.created_at = current_time
             self.updated_at = current_time
-            models.storage.new(self)
         else:
             for key in kwargs.keys():
                 if key == "__class__":
@@ -59,7 +69,14 @@ class BaseModel():
     def save(self) -> None:
         """Updates the public instance attribute updated_at with current datetime"""
         self.updated_at = datetime.now()
+        models.storage.new(self)
         models.storage.save()
+
+    def delete(self) -> None:
+        """
+        Delete the current instance from the storage
+        """
+        models.storage.delete(self)
 
     def to_dict(self) -> dict:
         """It returns the dict representation of the class
@@ -71,4 +88,6 @@ class BaseModel():
         rdic["__class__"] = self.__class__.__name__
         rdic["updated_at"] = self.updated_at.isoformat(sep='T', timespec='microseconds')
         rdic["created_at"] = self.created_at.isoformat(sep='T', timespec='microseconds')
+        if "_sa_instance_state" in rdic:
+            del rdic["_sa_instance_state"]
         return rdic
