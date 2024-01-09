@@ -11,6 +11,8 @@ class User(BaseModel, Base):
     """User class which inherit from BaseModel"""
     
     __tablename__ = "users"
+
+    
     email = ""
     password = ""
     first_name = ""

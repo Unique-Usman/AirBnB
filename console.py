@@ -43,41 +43,44 @@ class HBNBCommand(cmd.Cmd):
         """It remove trailing and leading space and \n from the argument"""
         return line.strip()
 
-    def do_create(self, arg=None) -> None:
-        """This command is for creating object
-
-        The Object can be BaseModel, Place and others
-
-        Args:
-            arg (str): The name of the object
-        Usage:
-            create <Class name> is compulsory
-            create <Class name> <param 1> <param 2> <param 3>
-        """
-        if arg is None or not arg:
+    def do_create(self, args):
+        """ Create an object of any class"""
+        if not args:
             print("** class name missing **")
-        else:
-            obj = arg.split(" ")[0]
-            if obj in HBNBCommand.CLASSNAME:
-                properties = " ".join(arg.split(" ")[1:])
-                pairs = re.findall(r'(\w+)="?(\w+\.?\w+)"?', properties)
-                bm = eval(obj)()
-                for key, val in pairs:
-                    val = val.replace("_", " ")
-                    print(val)
+            return
+
+        args_list = args.split(" ")
+        class_name = args_list[0]
+        if class_name not in HBNBCommand.CLASSNAME:
+            print("** class doesn't exist **")
+            return
+
+        param_dict = {}
+        for arg in args_list[1:]:
+            key_value = arg.split('=')
+            if len(key_value) == 2:
+                key, value = key_value
+                if value[0] == '"' and value[-1] == '"':
+                    value = value[1:-1].replace('_', ' ').replace('\\"', '"')
+                elif '.' in value:
                     try:
-                        val = int(val)
+                        value = float(value)
                     except ValueError:
-                        try:
-                            val = float(val)
-                        except ValueError:
-                            pass
-                    if hasattr(bm, key):
-                        setattr(bm, key, val)
-                bm.save()
-                print(bm.id)
-            else:
-                print("** class doesn't exist **")
+                        continue
+                else:
+                    try:
+                        value = int(value)
+                    except ValueError:
+                        continue
+                param_dict[key] = value
+        print(param_dict)
+        bm = eval(class_name)()
+        for key, val in param_dict.items():
+            print(key, val)
+            if hasattr(bm, key):
+                setattr(bm, key, val)
+        bm.save()
+        print(bm.id)
 
     def do_show(self, arg) -> None:
         """This command is for showing instance
