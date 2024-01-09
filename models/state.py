@@ -2,8 +2,8 @@
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String
 from models.city import City
-from sqlalchemy.orm import relationship
 from os import getenv
+from sqlalchemy.orm import relationship
 """The state class which represent the BaseModel class"""
 
 storage_type = getenv("HBNB_TYPE_STORAGE")

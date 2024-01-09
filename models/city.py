@@ -1,6 +1,7 @@
 #!/usr/bin/bash
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy.orm import relationship
 from os import getenv
 
 """The city class which represent the class for Cities in the program"""
@@ -14,6 +15,8 @@ class City(BaseModel, Base):
     if storage_type == "db":
         name = Column(String(128), nullable=False)
         state_id = Column(String(60), ForeignKey("states.id"), nullable=False)
+        places = relationship("Place", backref="cities",
+                              cascade="all, delete, delete-orphan")
     else:
         state_id = ""
         name = ""
