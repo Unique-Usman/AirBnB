@@ -11,7 +11,7 @@ import models
 
 Base = declarative_base()
 
-class BaseModel():
+class BaseModel:
     """This the base class for other class
 
     Other classed like the User, State, City and Place

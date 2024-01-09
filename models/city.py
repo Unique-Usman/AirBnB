@@ -2,8 +2,6 @@
 from models.base_model import BaseModel, Base
 from sqlalchemy import Column, String, ForeignKey
 from os import getenv
-from dotenv import load_dotenv
-load_dotenv()
 
 """The city class which represent the class for Cities in the program"""
 

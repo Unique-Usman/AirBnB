@@ -30,10 +30,9 @@ class FileStorage():
             dict: the dictionary that stores all objects
         """
         if cls:
-            return {key: value for key, value in
-                    FileStorage.__objects.items() if cls.__name__ in key}
-        else:
-            return FileStorage.__objects
+            return ({key: obj for key, obj in FileStorage.__objects.items()
+                     if isinstance(obj, cls)})
+        return FileStorage.__objects
 
     def new(self, obj) -> None:
         """For adding new object instances

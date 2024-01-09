@@ -64,6 +64,7 @@ class HBNBCommand(cmd.Cmd):
                 bm = eval(obj)()
                 for key, val in pairs:
                     val = val.replace("_", " ")
+                    print(val)
                     try:
                         val = int(val)
                     except ValueError:
