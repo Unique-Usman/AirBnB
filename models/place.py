@@ -1,12 +1,21 @@
 #!/usr/bin/python3
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, Float, Integer, String, ForeignKey
-from sqlalchemy.orm import relationship
+from models.review import Review
+from sqlalchemy import Column, Float, Integer, String, ForeignKey, Table
+from sqlalchemy.orm import backref, relationship
 from os import getenv
 """Represent the place in the program"""
 
 
 storage_type = getenv("HBNB_TYPE_STORAGE")
+if storage_type == "db":
+    place_amenity = Table("place_amenity", Base.metadata,
+                      Column("place_id",String(60),
+                             ForeignKey("places.id"),
+                             primary_key=True, nullable=False),
+                      Column("amenity_id", String(60),
+                             ForeignKey("amenities.id"),
+                             primary_key=True, nullable=False))
 
 class Place(BaseModel, Base):
     """The place class
@@ -34,6 +43,10 @@ class Place(BaseModel, Base):
         price_by_night = Column(Integer, nullable=False, default=0)
         latitude = Column(Float, nullable=True)
         longitude = Column(Float, nullable=True)
+        reviews = relationship("Review", backref="places",
+                               cascade="all, delete, delete-orphan")
+        amenities = relationship("Amenity", secondary=place_amenity,
+                                 backref="places", viewonly=False)
     else:
         city_id = ""
         user_id = ""
@@ -46,3 +59,33 @@ class Place(BaseModel, Base):
         latitude = 0.0
         longitude = 0.0
         amenity_ids = []
+
+        @property
+        def reviews(self):
+            """Getter for cities property."""
+            from models import storage
+            reviews = []
+            for review in storage.all(Review).values():
+                if review.place_id == self.id:
+                    reviews.append(review)
+            return reviews
+
+        @property
+        def amenities(self):
+            """getter attribute returns the list of Amenity instances"""
+            from models.amenity import Amenity
+            from models import storage
+            amenity_list = []
+            all_amenities = storage.all(Amenity)
+            for amenity in all_amenities.values():
+                if amenity.place_id == self.id:
+                    amenity_list.append(amenity)
+            return amenity_list
+
+        @amenities.setter
+        def amenities(self, obj):
+            """ setter for amenities class """
+            import models
+            temp = models.dummy_classes['Amenity']
+            if (isinstance(obj, models.storage.all(temp))):
+                self.amenity_ids.append(obj.id)

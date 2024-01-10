@@ -13,7 +13,7 @@ from models.review import Review
 from sqlalchemy.orm import sessionmaker, scoped_session
 from os import getenv
 
-models = [City, State, User, Place]
+models = [City, State, User, Place, Review, Amenity]
 class DBStorage:
     """
     Database storage engine for alchemy

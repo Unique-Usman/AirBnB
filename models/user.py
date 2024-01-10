@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 from models.base_model import BaseModel, Base
-from sqlalchemy import Column, String, ForeignKey
+from sqlalchemy import Column, String, ForeignKey, delete
 from os import getenv
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import backref, relationship
 from models.place import Place
 from models.city import City
 
@@ -25,6 +25,8 @@ class User(BaseModel, Base):
         last_name = Column(String(128), nullable=True)
         places = relationship("Place", 
                             backref="user", cascade="all, delete, delete-orphan")
+        reviews = relationship("Review", backref="user",
+                               cascade="all, delete, delete-orphan")
     else:
         email = ""
         password = ""

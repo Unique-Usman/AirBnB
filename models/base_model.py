@@ -57,6 +57,7 @@ class BaseModel:
                                                         "%Y-%m-%dT%H:%M:%S.%f")
                 else:
                     setattr(self, key, kwargs.get(key))
+                self.id = str(uuid.uuid4())
 
     def __str__(self) -> str:
         """It return the string representation of the Obj of the Class

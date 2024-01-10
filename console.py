@@ -2,12 +2,12 @@
 import cmd
 import re
 from models.base_model import BaseModel
+from models.place import Place
 from models.user import User
 from models.city import City
 from models.amenity import Amenity
 from models.state import State
 from models.review import Review
-from models.place import Place
 from models import storage
 
 import json
@@ -73,10 +73,8 @@ class HBNBCommand(cmd.Cmd):
                     except ValueError:
                         continue
                 param_dict[key] = value
-        print(param_dict)
         bm = eval(class_name)()
         for key, val in param_dict.items():
-            print(key, val)
             if hasattr(bm, key):
                 setattr(bm, key, val)
         bm.save()
@@ -142,9 +140,10 @@ class HBNBCommand(cmd.Cmd):
         else:
             list_obj = []
             all_objects = storage.all()
+            print(all_objects)
             for key in all_objects:
                 if arg in key:
-                    list_obj.append(all_objects[key])
+                    list_obj.append(all_objects[key].to_dict())
             print(list_obj)
 
     def do_update(self, arg) -> None:
