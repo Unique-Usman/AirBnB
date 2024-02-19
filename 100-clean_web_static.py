@@ -10,7 +10,7 @@ import os
 
 # env.hosts = ['localhost']
 # env.user = "uniqueusman"
-env.hosts = ['54.87.224.239']  # <IP web-01>, <IP web-02>
+env.hosts = ['54.87.224.239', '3.85.16.5']  # <IP web-01>, <IP web-02>
 
 
 def do_pack():
