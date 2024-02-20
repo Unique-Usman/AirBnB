@@ -1,12 +1,6 @@
 """
 A python script that starts a flask applicaion
 And listening on 0.0.0.0 on port 5000
-
-Routes:
-/: display “Hello HBNB!”
-/hbnb: display “HBNB”
-/c/<text>: display “C ” followed by the value of
-the text variable (replace underscore _ symbols with a space )
 """
 from web_flask import app
 
@@ -38,6 +32,30 @@ def print_c(text):
         text (str): The text to print alongpython3 -m web_flask.3-python_route
     """
     return "C " + " ".join(text.split("_"))
+
+
+@app.route("/python/<text>", strict_slashes=False)
+def print_pyton(text):
+    """
+    Display Python followed by the text
+    variable replace underscore symbols
+    with A
+
+    Args:
+        text (str): The text to print alongpython3 -m web_flask.3-python_route
+    """
+    return "Python "+" ".join(text.split("_"))
+
+
+@app.route("/number/<int:n>", strict_slashes=False)
+def display_number(n):
+    """
+    Display a number if it is int
+
+    Args:
+        n (int): Number to display
+    """
+    return f"{n} is a number"
 
 
 if __name__ == "__main__":

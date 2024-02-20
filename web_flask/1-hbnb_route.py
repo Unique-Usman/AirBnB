@@ -1,6 +1,9 @@
 """
 A python script that starts a flask applicaion
 And listening on 0.0.0.0 on port 5000
+Routes:
+/: display “Hello HBNB!”
+/hbnb: display “HBNB”
 """
 from web_flask import app
 
