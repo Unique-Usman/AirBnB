@@ -44,7 +44,6 @@ class DBStorage:
         result = {}
         for clss in models:
             if cls is None or cls is clss:
-                print(cls)
                 objs = self.__session.query(clss).all()
                 for obj in objs:
                     key = obj.__class__.__name__ + '.' + obj.id
