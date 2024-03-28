@@ -70,10 +70,25 @@ class FileStorage():
 
     def delete(self, obj=None) -> None:
         if obj is not None:
-            del FileStorage.__objects[f"{obj.__class__.__name__}.{obj.id}"]
+            FileStorage.__objects.pop(f"{obj.__class__.__name__}.{obj.id}")
 
     def close(self):
         """
         Call reload() method to deserialized the JSON file to objects
         """
         self.reload()
+
+    def get(self, cls, id):
+        """
+        Return the object based on a cls and id
+        """
+        obj = FileStorage.__objects.get(f"{cls.__name__}.{id}")
+        return obj
+
+    def count(self, cls=None):
+        """
+        Count the number of Object with a particular
+        cls if the cls exist else, it returns the count
+        for all object in the class
+        """
+        return len(self.all(cls))

@@ -89,3 +89,29 @@ class DBStorage:
         Close the current database session
         """
         self.__session.close()
+
+    def get(self, cls, id):
+        """
+        A method to retrieve an Object by
+        cls and id
+        """
+        objs = self.__session.query(cls).filter_by(id=id).first()
+        return objs
+
+    def count(self, cls=None):
+        """
+        Returns all the number of object in a cls
+        
+        If the class does not exist, it returns all
+        the object in the storage
+        """
+        if cls:
+            objs = self.__session.query(cls).all()
+            return len(objs)
+        
+        count = 0
+        for clss in models:
+            objs = self.__session.query(clss).all()
+            count += len(objs)
+
+        return count

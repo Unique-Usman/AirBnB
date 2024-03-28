@@ -109,7 +109,7 @@ def put_place_id(place_id):
                  strict_slashes=False)
 def places_search():
     """
-        places route to handle http method for request to search places
+    places route to handle http method for request to search places
     """
     all_places = [p for p in storage.all('Place').values()]
     req_json = request.get_json()
